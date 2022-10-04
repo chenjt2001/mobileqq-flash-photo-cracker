@@ -121,7 +121,7 @@ bool yield_possible_key(
         if (des_ecb_decrypt(
                 (const unsigned char *) (ctx->ciphertext),
                 (unsigned char *) &plaintext,
-                (const symmetric_key *) &skey
+                (symmetric_key *) &skey
         ) != CRYPT_OK)
             continue; /* failed to decrypt, skip this key */
         /* validate JPEG header (first 3 bytes) of the plaintext */
@@ -132,7 +132,7 @@ bool yield_possible_key(
         if (des_ecb_decrypt(
                 (const unsigned char *) (ctx->ciphertext + ctx->len - 8),
                 (unsigned char *) &plaintext,
-                (const symmetric_key *) &skey
+                (symmetric_key *) &skey
         ) != CRYPT_OK)
             continue; /* failed to decrypt, skip this key */
         if (pkcs7_check_pad((const char *) &plaintext, 8) < 0)
@@ -219,7 +219,7 @@ int thread_worker(thread_param *param) {
             des_ecb_decrypt(
                     (const unsigned char *) ((uint64_t *) ciphertext + blk),
                     (unsigned char *) ((uint64_t *) plaintext + blk),
-                    (const symmetric_key *) &skey
+                    (symmetric_key *) &skey
             );
             /* error checking is unnecessary here */
         }
