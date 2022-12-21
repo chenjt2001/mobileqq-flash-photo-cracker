@@ -462,11 +462,11 @@ int main(int argc, char *argv[]) {
     /* validate file header */
     char header[8];
     if (fread(header, 1, 8, fp) != 8) {
-        fprintf(stderr, "Cannot read first 8 bytes from file.\n");
+        fprintf(stderr, "无法读取前8字节.\n");
         return 1;
     }
     if (*(uint64_t *) header != *(uint64_t *) "ENCRYPT:") {
-        fprintf(stderr, "Bad file header.\n");
+        fprintf(stderr, "无效的文件头.\n");
         return 1;
     }
 
@@ -474,7 +474,7 @@ int main(int argc, char *argv[]) {
     fseek(fp, 0, SEEK_END);
     long file_length = ftell(fp);
     if (file_length <= 8) {
-        fprintf(stderr, "Invalid file length (%ld)\n", file_length);
+        fprintf(stderr, "无效的文件长度 (%ld)\n", file_length);
         return 1;
     }
 
@@ -495,7 +495,7 @@ int main(int argc, char *argv[]) {
 
     fseek(fp, 8, SEEK_SET);
     if (fread(ciphertext_buf, 1, ciphertext_length, fp) != ciphertext_length) {
-        fprintf(stderr, "Cannot read the whole file.\n");
+        fprintf(stderr, "无法完整读取文件.\n");
         return 1;
     }
 
@@ -535,7 +535,7 @@ int main(int argc, char *argv[]) {
                 &thread_ids[i],
                 (thrd_start_t) thread_worker,
                 &thread_params[i]) != thrd_success) {
-            fprintf(stderr, "Cannot start thread %d.\n", i);
+            fprintf(stderr, "线程无法开始，你这什么电脑？%d.\n", i);
             return 1;
         }
     }
@@ -545,7 +545,7 @@ int main(int argc, char *argv[]) {
         int ret;
         thrd_join(thread_ids[i], &ret);
         if (ret) {
-            fprintf(stderr, "Worker terminated with error code %d.\n", ret);
+            fprintf(stderr, "错误代码: %d.\n", ret);
         }
     }
 
@@ -553,17 +553,17 @@ int main(int argc, char *argv[]) {
     if (crack_result.plaintext != NULL && plaintext_save_path) {
         FILE *fout = fopen(plaintext_save_path, "wb");
         if (!fout) {
-            perror("Cannot open file for saving");
+            perror("文件打不开啊");
             return 1;
         }
         fwrite(crack_result.plaintext, 1, crack_result.len, fout);
         fclose(fout);
-        printf("Flash photo has been saved in: %s\n",
+        printf("闪照将保存在: %s\n",
                plaintext_save_path);
     }
 
     if (crack_result.plaintext == NULL) {
-        printf("[-] KEY WAS NOT FOUND.\n");
+        printf("[-] 未找到密钥.\n");
     }
 
     return 0;
