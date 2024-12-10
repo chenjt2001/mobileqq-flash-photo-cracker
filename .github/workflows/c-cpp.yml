@@ -1,0 +1,34 @@
+name: Build and Upload mobileqq-flash-photo-cracker
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: |
+        choco install vcpkg -y
+        vcpkg integrate install
+        vcpkg install libtomcrypt
+
+    - name: Configure CMake
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=${{github.workspace}}/vcpkg/scripts/buildsystems/vcpkg.cmake
+
+    - name: Build
+      run: cmake --build ${{github.workspace}}/build --config Release
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: mobileqq-flash-photo-cracker
+        path: ${{github.workspace}}/build/fp_cracker.exe
+        retention-days: 7
