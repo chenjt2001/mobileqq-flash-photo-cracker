@@ -8,8 +8,9 @@
 #include <errno.h>
 #include <time.h>
 #include <string.h>
+#ifndef _WIN32
 #include <sys/time.h>
-
+#endif
 #include <tomcrypt.h>
 
 #define OPTPARSE_IMPLEMENTATION
@@ -265,6 +266,7 @@ int thread_worker(thread_param *param) {
     return 0;
 }
 
+#ifndef _WIN32
 void run_benchmark(int threads) {
 #define TEST_CT_LENGTH 1024u
     thrd_t *thread_ids;
@@ -354,6 +356,7 @@ void run_benchmark(int threads) {
     printf("Time to search the whole key space: "
            "%.3f sec (%.3f cpu-sec, single thread)\n", secs, cpu_secs);
 }
+#endif
 
 void print_help(const char *program_name) {
     printf(
@@ -442,8 +445,12 @@ int main(int argc, char *argv[]) {
 
     /* run benchmark and exit */
     if (benchmark) {
+#ifndef _WIN32
         run_benchmark(threads);
         return 0;
+#else
+        return 1;
+#endif
     }
 
     if (ciphertext_file_path == NULL) {
